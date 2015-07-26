@@ -1,0 +1,28 @@
+{
+  "name": "Testing-with-Mocha-Chai-and-Sinon",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kinnza/Testing-with-Mocha-Chai-and-Sinon.git"
+  },
+  "keywords": [
+    "javascript",
+    "unittesting",
+    "mocha",
+    "chai",
+    "sinon"
+  ],
+  "author": "Kinneret Zin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kinnza/Testing-with-Mocha-Chai-and-Sinon/issues"
+  },
+  "homepage": "https://github.com/Kinnza/Testing-with-Mocha-Chai-and-Sinon",
+  "dependencies": {
+    "q": "^1.4.1"
+  }
+}
