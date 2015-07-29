@@ -4,9 +4,10 @@
 
 var Q = require('q');
 
-var Person = function(firstName,lastName) {
+var Person = function(firstName,lastName,age) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.age = age || 12;
 };
 
 
@@ -22,6 +23,19 @@ Person.fetchPerson = function(id,callback) {
     },100);
 };
 
+Person.fetchAll = function(callback) {
+    // Will simulate fetching person data from server
+    setTimeout(function(){
+        var list = [];
+        list.push(new Person('Jane','Doe',33));
+        list.push(new Person('John','Doe',32));
+        list.push(new Person('John','Smith',31));
+        list.push(new Person('James','Bond',30));
+        list.push(new Person('Jane','Austin',29));
+        callback(list);
+    },100);
+};
+
 Person.prototype.save = function() {
     return Q.Promise(function(resolve, reject, notify) {
         // Will simulate saving this person's data in the server, will return a success method
@@ -31,5 +45,7 @@ Person.prototype.save = function() {
 
     });
 };
+
+
 module.exports = Person;
 

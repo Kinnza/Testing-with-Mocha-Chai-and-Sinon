@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Kinnza/Testing-with-Mocha-Chai-and-Sinon",
   "dependencies": {
+    "chai": "^3.2.0",
     "q": "^1.4.1"
   }
 }
