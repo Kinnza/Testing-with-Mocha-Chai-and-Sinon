@@ -6,21 +6,18 @@
 
 var assert = require('chai').assert;
 var expect = require('chai').expect;
+var sinon = require('sinon');
+
 var Person = require('../src/person');
+var PersonApi = require('../src/PersonApi');
+
 
 describe('Person tests', function() {
+
     it('should return check that full name is correct', function () {
         var person = new Person('John','Doe');
 
         assert.equal(person.getFullName(), 'John Doe','Person\'s full name should be John Doe');
-    });
-
-    it('should get person data from server, and check its right name', function (done) {
-
-        Person.fetchPerson(1,function(person){
-            assert.equal(person.getFullName(), 'Jane Doe','Fetched person\'s full name should be Jane Doe');
-            done();
-        });
     });
 
     it('should save a person\'s data in the server, and check the response message', function () {
@@ -43,4 +40,30 @@ describe('Person tests', function() {
         });
     });
 
+    describe('Person fetch', function(){
+        beforeEach(function() {
+            // Define a spy on the method 'getById' in PersonApi
+            sinon.spy(PersonApi, "getById");
+        });
+
+        afterEach(function() {
+            // Restore the function
+            PersonApi.getById.restore();
+        });
+
+        it('should get person data from server, and check its right name', function (done) {
+
+            Person.fetchPerson(1,function(person){
+                assert.equal(person.getFullName(), 'Jane Doe','Fetched person\'s full name should be Jane Doe');
+
+
+                // Test that getById was called once
+                expect(PersonApi.getById.calledOnce).to.be.true;
+                expect(PersonApi.getById.getCall(0).args[0]).to.be.a('number');
+                expect(PersonApi.getById.getCall(0).args[0]).to.equal(1,'PersonAPI.getById should have been called with first parameter(id) that equals 1');
+
+                done();
+            });
+        });
+    });
 });
