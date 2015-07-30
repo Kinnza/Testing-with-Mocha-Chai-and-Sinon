@@ -20,13 +20,6 @@ describe('Person tests', function() {
         assert.equal(person.getFullName(), 'John Doe','Person\'s full name should be John Doe');
     });
 
-    it('should save a person\'s data in the server, and check the response message', function () {
-        var person = new Person('John','Smith');
-
-        return person.save().then(function(response){
-            assert.equal(response.message, 'Data was saved successfully','Save message from the server should be "Data was saved successfully"');
-        });
-    });
 
     it('should fetch a list of people from the server, and check that the data is ok',function(done){
         Person.fetchAll(function(peopleList){
@@ -65,5 +58,50 @@ describe('Person tests', function() {
                 done();
             });
         });
+    });
+
+    describe('Person save',function(){
+        var saveStub;
+
+        beforeEach(function() {
+            // Define a spy on the method 'getById' in PersonApi
+            saveStub = sinon.stub(PersonApi, "save");
+        });
+        afterEach(function() {
+            // Restore the function
+            saveStub.restore();
+        });
+
+
+        it('should save a person\'s data in the server, and check the response message', function () {
+            saveStub.callsArgWith(1,{
+                message: 'Data was saved successfully'
+            });
+            var person = new Person('John','Smith');
+
+            return person.save().then(function(response){
+                assert.equal(response.message, 'Data was saved successfully','Save message from the server should be "Data was saved successfully"');
+            });
+        });
+
+        it('Should check what happens if an error is thrown', function () {
+            // Set the stub to throw an error
+            saveStub.throws(new Error('error'));
+
+            var person = new Person('John','Smith');
+
+            return person.save().then(
+                function() {
+                    throw(new Error('shouldnt reach here'));
+                },
+                function(err){
+                    expect(err).to.exist;
+                    expect(err).to.be.an.instanceof(Error);
+                }
+            ).fail(function(){
+                throw(new Error('shouldnt reach here'));
+            });
+        });
+
     });
 });
