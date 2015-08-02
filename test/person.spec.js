@@ -20,18 +20,47 @@ describe('Person tests', function() {
         assert.equal(person.getFullName(), 'John Doe','Person\'s full name should be John Doe');
     });
 
+    describe('Person fetchAll',function(){
+        var mock;
+
+        beforeEach(function() {
+            // Define a spy on the method 'getById' in PersonApi
+            mock = sinon.mock(PersonApi).expects("getAll").once().callsArgWith(0,[
+                    {firstName: 'Jane',lastName: 'Doe', age: 33},
+                    {firstName: 'John',lastName: 'Doe', age: 32},
+                    {firstName: 'John',lastName: 'Smith', age: 31}
+                ]
+            );
+        });
+
+        afterEach(function() {
+            // Restore the function
+            PersonApi.getAll.restore();
+        });
+
+
+        it('should check that getAll was called once when calling fetchAll',function(done){
+            Person.fetchAll(function(peopleList){
+
+                // Test that everything we expected from the mock happened
+                mock.verify();
+
+                done();
+            });
+        });
+
+    });
 
     it('should fetch a list of people from the server, and check that the data is ok',function(done){
         Person.fetchAll(function(peopleList){
 
-            assert.lengthOf(peopleList, 5, 'People\'s list length should be 5');
-
-            //assert.isNumber(peopleList[0].age,'Person\'s age should be a number');
+            assert.lengthOf(peopleList, 5, 'People\'s list length should be 3');
             expect(peopleList[0].age).to.be.a('number','Person\'s age should be a number');
 
             done();
         });
     });
+
 
     describe('Person fetch', function(){
         beforeEach(function() {
@@ -92,14 +121,14 @@ describe('Person tests', function() {
 
             return person.save().then(
                 function() {
-                    throw(new Error('shouldnt reach here'));
+                    throw(new Error('shouldn\'t reach here'));
                 },
                 function(err){
                     expect(err).to.exist;
                     expect(err).to.be.an.instanceof(Error);
                 }
             ).fail(function(){
-                throw(new Error('shouldnt reach here'));
+                throw(new Error('shouldn\'t reach here'));
             });
         });
 
